@@ -96,7 +96,7 @@ if [ ! -f "$PROMPT_FILE" ]; then
 fi
 
 # Set filetype
-FTYPE=$(echo "$PROMPT_FILE" | awk -F. '{print "."$NF}')
+FTYPE=$(echo "$PROMPT_FILE" | awk -F. '{print $NF}')
 
 # Ensure both tokens and temperature are specified
 if [ -z "$TOKEN" ] || [ -z "$TEMP" ]; then
@@ -146,6 +146,4 @@ curl -X POST "$URL" \
   "temperature": $TEMP
 }
 EOF
-) | jq -r '.choices[0].message.content' > output$FTYPE
-
-nvim output$FTYPE
+) | jq -r '.choices[0].message.content' > output.$FTYPE
