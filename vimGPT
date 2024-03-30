@@ -1,0 +1,85 @@
+#!/bin/zsh
+
+TOKEN=""
+TEMP=""
+
+show_help() {
+cat << EOF
+Usage: $0 [options...] <input_file>
+
+$0 - a NeoVim utility for accessing the OpenAI API, $0 is designed to improve developer workflow when utilising Large Language Models.
+
+Options:
+    -s <tokens>         Set number of tokens to generate
+    -t <temperature>    Temperature for response generation
+    -h, --help          Show help menu
+
+Example Usage: $0 -s 1000 -t 0.4
+
+------------
+
+Tokens
+
+------------
+
+A token is considered to be 4 characters. The number of tokens set must be enough to include the length
+of the peovided input and expected output.
+
+------------
+
+Temperature
+
+------------
+
+The temperature parameter controls the randomness of the output. 
+
+Low (0.1 - 0.3)
+Predictable, deterministic output.
+
+Medium (0.4 - 0.6)
+An adaptable range balancing creativity and predictability
+
+High (0.7 - 1.0)
+Creative and unpredictable. Strong possibility of hallucination.
+EOF
+}
+
+usage() {
+cat << EOF
+Usage: $0 [options...]
+Help: '$0 -h'
+EOF
+}
+
+while getopts ":s:t:h" opt; do
+  case ${opt} in
+    s )
+      TOKEN=$OPTARG
+      ;;
+    t )
+      TEMP=$OPTARG
+      ;;
+    h )
+      show_help
+      exit 0
+      ;;
+    \? )
+      echo "Invalid option: -$OPTARG" 1>&2
+      usage
+      exit 1
+      ;;
+    : )
+      echo "Option -$OPTARG requires an argument." 1>&2
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+if [ -z "$token" ] || [ -z "$temp" ]; then
+    echo "error: both tokens and temperature must be specified."
+    usage
+    exit 1
+fi
+
+eval $("nvr --servername /tmp/nvimsocket --remote-send \":!./script.sh -s $TOKEN -t $TEMP %:p<CR>\"")

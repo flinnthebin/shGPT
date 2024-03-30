@@ -1,0 +1,151 @@
+#!/bin/zsh
+
+API_KEY="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"
+URL="https://api.openai.com/v1/chat/completions"
+TOKEN=""
+TEMP=""
+
+show_help() {
+cat << EOF
+Usage: $0 [options...] <input_file>
+
+$0 - a command line utility for accessing the OpenAI API, $0 is designed to improve developer workflow when utilising Large Language Models.
+
+Options:
+    -s <tokens>         Set number of tokens to generate
+    -t <temperature>    Temperature for response generation
+    -h, --help          Show help menu
+
+Example Usage: $0 -s 1000 -t 0.4 <input_file>
+
+------------
+
+Tokens
+
+------------
+
+A token is considered to be 4 characters. The number of tokens set must be enough to include the length
+of the peovided input and expected output.
+
+------------
+
+Temperature
+
+------------
+
+The temperature parameter controls the randomness of the output. 
+
+Low (0.1 - 0.3)
+Predictable, deterministic output.
+
+Medium (0.4 - 0.6)
+An adaptable range balancing creativity and predictability
+
+High (0.7 - 1.0)
+Creative and unpredictable. Strong possibility of hallucination.
+EOF
+}
+
+usage() {
+cat << EOF
+Usage: $0 [options...] <input_file>
+Help: '$0 -h'
+EOF
+}
+
+# Parse options
+while getopts ":s:t:h" opt; do
+  case ${opt} in
+    s )
+      TOKEN=$OPTARG
+      ;;
+    t )
+      TEMP=$OPTARG
+      ;;
+    h )
+      show_help
+      exit 0
+      ;;
+    \? )
+      echo "Invalid option: -$OPTARG" 1>&2
+      usage
+      exit 1
+      ;;
+    : )
+      echo "Option -$OPTARG requires an argument." 1>&2
+      usage
+      exit 1
+      ;;
+  esac
+done
+shift $((OPTIND -1))
+
+# Check for input file argument
+if [ -z "$1" ]; then
+    echo "Error: No argument for input file"
+    usage
+    exit 1
+fi
+
+PROMPT_FILE="$1"
+
+# Check prompt file exists
+if [ ! -f "$PROMPT_FILE" ]; then
+    echo "Error: $PROMPT_FILE not found"
+    exit 1
+fi
+
+# Set filetype
+FTYPE=$(echo "$PROMPT_FILE" | awk -F. '{print "."$NF}')
+
+# Ensure both tokens and temperature are specified
+if [ -z "$TOKEN" ] || [ -z "$TEMP" ]; then
+    echo "Error: Both tokens and temperature must be specified."
+    usage
+    exit 1
+fi
+
+cat << EOF
+
+$(tput setaf 8)Tokens: $(tput setaf 12)$TOKEN
+$(tput setaf 7)A token is considered to be 4 characters. The number of tokens set 
+must be enough to include the length of the provided input and expected output.
+
+$(tput setaf 8)Temperature: $(tput setaf 12)$TEMP
+$(tput setaf 7)The temperature parameter controls the randomness of the output. 
+
+$(tput setaf 8)Low $(tput setaf 12)(0.1 - 0.3)
+$(tput setaf 7)Predictable, deterministic output.
+
+$(tput setaf 8)Medium $(tput setaf 12)(0.4 - 0.6)
+$(tput setaf 7)An adaptable range balancing creativity and predictability
+
+$(tput setaf 8)High $(tput setaf 12)(0.7 - 1.0)
+$(tput setaf 7)Creative and unpredictable. Strong possibility of hallucination.
+
+EOF
+
+printf "Sending API request"
+for i in {1..3}; do
+  sleep 0.5
+  printf "."
+done
+sleep 1
+printf "\n\nResponse:\n"
+
+(
+PROMPT=$(<"$PROMPT_FILE")
+curl -X POST "$URL" \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer $API_KEY" \
+     --data @- << EOF
+{
+  "model": "gpt-3.5-turbo-0125",
+  "messages": [{"role": "user", "content": "$PROMPT"}],
+  "max_tokens": $TOKEN,
+  "temperature": $TEMP
+}
+EOF
+) | jq -r '.choices[0].message.content' > output$FTYPE
+
+nvim output$FTYPE
