@@ -107,31 +107,27 @@ fi
 
 cat << EOF
 
-$(tput setaf 8)Tokens: $(tput setaf 12)$TOKEN
-$(tput setaf 7)A token is considered to be 4 characters. The number of tokens set 
+---------------
+Tokens: $TOKEN
+---------------
+A token is considered to be 4 characters. The number of tokens set 
 must be enough to include the length of the provided input and expected output.
 
-$(tput setaf 8)Temperature: $(tput setaf 12)$TEMP
-$(tput setaf 7)The temperature parameter controls the randomness of the output. 
+-------------------
+Temperature: $TEMP
+-------------------
+The temperature parameter controls the randomness of the output. 
 
-$(tput setaf 8)Low $(tput setaf 12)(0.1 - 0.3)
-$(tput setaf 7)Predictable, deterministic output.
+Low (0.1 - 0.3)
+Predictable, deterministic output.
 
-$(tput setaf 8)Medium $(tput setaf 12)(0.4 - 0.6)
-$(tput setaf 7)An adaptable range balancing creativity and predictability
+Medium (0.4 - 0.6)
+An adaptable range balancing creativity and predictability.
 
-$(tput setaf 8)High $(tput setaf 12)(0.7 - 1.0)
-$(tput setaf 7)Creative and unpredictable. Strong possibility of hallucination.
+High (0.7 - 1.0)
+Creative and unpredictable. Strong possibility of hallucination.
 
 EOF
-
-printf "Sending API request"
-for i in {1..3}; do
-  sleep 0.5
-  printf "."
-done
-sleep 1
-printf "\n\nResponse:\n"
 
 (
 PROMPT=$(<"$PROMPT_FILE")
@@ -140,7 +136,7 @@ curl -X POST "$URL" \
      -H "Authorization: Bearer $API_KEY" \
      --data @- << EOF
 {
-  "model": "gpt-3.5-turbo-0125",
+  "model": "gpt-4-turbo-preview",
   "messages": [{"role": "user", "content": "$PROMPT"}],
   "max_tokens": $TOKEN,
   "temperature": $TEMP
