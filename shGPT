@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-# these are no longer my API keys
+# this is no longer my API key
 API_KEY="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"
 URL="https://api.openai.com/v1/chat/completions"
 TOKEN=""
