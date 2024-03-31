@@ -25,7 +25,7 @@ Tokens
 ------------
 
 A token is considered to be 4 characters. The number of tokens set must be enough to include the length
-of the peovided input and expected output.
+of the provided input and expected output.
 
 ------------
 
