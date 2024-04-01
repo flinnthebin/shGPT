@@ -1,5 +1,6 @@
 #!/bin/zsh
 
+# this is no longer my API key
 API_KEY="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"
 URL="https://api.openai.com/v1/chat/completions"
 TOKEN=""
@@ -14,7 +15,7 @@ $0 - a command line utility for accessing the OpenAI API, $0 is designed to impr
 Options:
     -s <tokens>         Set number of tokens to generate
     -t <temperature>    Temperature for response generation
-    -h, --help          Show help menu
+    -h                  Show help menu
 
 Example Usage: $0 -s 1000 -t 0.4 <input_file>
 
@@ -142,4 +143,6 @@ curl -X POST "$URL" \
   "temperature": $TEMP
 }
 EOF
+
+# jq magic
 ) | jq -r '.choices[0].message.content' > output.$FTYPE

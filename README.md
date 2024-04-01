@@ -43,7 +43,8 @@ endfunction
 
 A token is considered to be 4 characters. The number of tokens set must be enough to include the length
 of the provided input and expected output.
-I'm pretty sure the hard limit for GPT-4 is 4096 currently, so that is the hard limit.
+
+I'm pretty sure the hard limit for GPT-4 is 4096 currently?
 
 ## Temperature
 
