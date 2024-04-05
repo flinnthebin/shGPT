@@ -4,7 +4,7 @@ shGPT - a command-line utility for accessing openAI LLMs
 
 ## File Interaction
 
-shGPT is configured for my personal workflow. You may not like it, but it is designed to work based off your file extension.
+shGPT is configured for my personal workflow. It is designed to work based off your current file extension.
 
 When working in a vim file, :vsplit to input.py, question.cpp, prompt.csv, etc.
 
@@ -16,7 +16,7 @@ Returns a formatted output.java, output.xml, whatever.
 
 ## .config/nvim
 
-Just put shGPT here, nvim will find it in the nvim path and it will work probably (it does on my machine)
+Put shGPT here
 
 ## init.vim
 

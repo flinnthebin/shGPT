@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # this is no longer my API key
-API_KEY="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"
+API_KEY="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"
 URL="https://api.openai.com/v1/chat/completions"
 TOKEN=""
 TEMP=""
@@ -145,4 +145,5 @@ curl -X POST "$URL" \
 EOF
 
 # jq magic
-) | jq -r '.choices[0].message.content' > output.$FTYPE
+) # | jq -r '.choices[0].message.content'
+> output.$FTYPE
